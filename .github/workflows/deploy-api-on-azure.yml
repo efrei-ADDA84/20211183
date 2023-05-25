@@ -18,10 +18,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout GitHub Action
+      - name: 'Checkout GitHub Action'
         uses: actions/checkout@v2
 
-      - name: Login via Azure CLI
+      - name: 'Login via Azure CLI'
         uses: azure/login@v1
         with:
           creds: ${{ envs.AZURE_CREDENTIALS }}
@@ -32,15 +32,15 @@ jobs:
           username: maroua123
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push image
-        uses: azure/docker-login@v1
-        with:
-          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
+      - name: 'Build and push image'
+        env:
+          REGISTRY_LOGIN_SERVER: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+          REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
         run: |
-          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/20211183:v1
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/20211183:v1
+          docker build . -t $REGISTRY_LOGIN_SERVER/20211183:v1
+          docker login $REGISTRY_LOGIN_SERVER -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD
+          docker push $REGISTRY_LOGIN_SERVER/20211183:v1
 
       - name: Deploy to Azure Container Instance
         uses: azure/container-action@v1
