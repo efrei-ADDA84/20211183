@@ -1,4 +1,4 @@
-name: build-and-deploy
+name: deploy-api-on-azure
 
 on:
   push:
