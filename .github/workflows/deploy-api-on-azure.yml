@@ -48,6 +48,5 @@ jobs:
           registry-username: ${{ secrets.REGISTRY_USERNAME }}
           registry-password: ${{ secrets.REGISTRY_PASSWORD }}
           name: aci-20211183
-          dns-name-label: devops-20211183
           location: francecentral
           ports: 8081:8081
