@@ -29,8 +29,8 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t ${{ env.ACR_REGISTRY }}/11002167:v1 .
-          docker push ${{ env.ACR_REGISTRY }}/11002167:v1
+          docker build -t ${{ env.ACR_REGISTRY }}/20211183:v1 .
+          docker push ${{ env.ACR_REGISTRY }}/20211183:v1
 
       - name: Login to Azure Container Registry
         uses: azure/docker-login@v1
