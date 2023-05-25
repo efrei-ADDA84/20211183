@@ -1,4 +1,4 @@
-name: deploy-api-on-azure
+name: build-and-deploy
 
 on:
   push:
@@ -18,36 +18,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 'Checkout GitHub Action'
+      - name: Checkout repository
         uses: actions/checkout@v2
-
-      - name: 'Login via Azure CLI'
-        uses: azure/login@v1
-        with:
-          credentials: ${{ env.AZURE_CREDENTIALS }}
 
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
-          username: maroua123
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
 
-      - name: 'Build and push image'
-        env:
-          REGISTRY_LOGIN_SERVER: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-          REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
-          REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+      - name: Build and push Docker image
         run: |
-          docker build . -t $REGISTRY_LOGIN_SERVER/20211183:v1
-          docker login $REGISTRY_LOGIN_SERVER -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD
-          docker push $REGISTRY_LOGIN_SERVER/20211183:v1
+          docker build -t ${{ env.ACR_REGISTRY }}/20211183:v1 .
+          docker push ${{ env.ACR_REGISTRY }}/20211183:v1
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ env.AZURE_CREDENTIALS }}
 
       - name: Deploy to Azure Container Instance
-        uses: azure/container-action@v1
-        with:
-          image: ${{ secrets.ACR_REGISTRY }}/20211183:v1
-          name: ${{ secrets.ACI_NAME }}
-          resource-group: ${{ secrets.RESOURCE_GROUP }}
-          dns-name-label: devops-20211183
-          location: francecentral
-          ports: 8081:8081
+        run: |
+          az container create --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.ACI_NAME }} --image ${{ env.ACR_REGISTRY }}/20211183:v1 --dns-name-label devops-20211183 --ports 8081 --cpu 1 --memory 1.5 --restart-policy Never
