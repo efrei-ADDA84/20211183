@@ -35,8 +35,8 @@ jobs:
           
       - name: Build and push Docker image
         run: |
-          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/20211183:v1
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/20211183:v1
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/20211183:${{ github.sha }} 
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/20211183:${{ github.sha }}
 
       - name: 'Deploy to Azure Container Instances'
         uses: azure/aci-deploy@v1
@@ -49,4 +49,4 @@ jobs:
           registry-password: ${{ secrets.REGISTRY_PASSWORD }}
           name: 20211183
           location: france central
-          ports: 8081
+          ports: "8081"
