@@ -5,13 +5,13 @@ on:
     branches:
       - main
 
-env:
-  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-  ACR_REGISTRY: efreidevops.azurecr.io
-  ACI_NAME: 20211183
-  RESOURCE_GROUP: ADDA84-CTP
+#env:
+  #DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  #DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  #AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+  #ACR_REGISTRY: efreidevops.azurecr.io
+  #ACI_NAME: 20211183
+  #RESOURCE_GROUP: ADDA84-CTP
 
 jobs:
   build-and-deploy:
@@ -41,7 +41,8 @@ jobs:
       - name: 'Deploy to Azure Container Instances'
         uses: azure/aci-deploy@v1
         with:
-          resource-group: ${{ secrets.RESOURCE_GROUP }}
+          #resource-group: ${{ secrets.RESOURCE_GROUP }}
+          resource-group: ADDA84-CTP
           dns-name-label: devops-20211183
           image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/20211183:${{ github.sha }}
           registry-login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
